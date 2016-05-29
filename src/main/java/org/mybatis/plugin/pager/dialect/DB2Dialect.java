@@ -5,6 +5,9 @@
 
 package org.mybatis.plugin.pager.dialect;
 
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.MappedStatement;
+
 /**
  * @Description: 
  * @author Hanyanjing
@@ -14,7 +17,7 @@ package org.mybatis.plugin.pager.dialect;
 public class DB2Dialect extends DialectAdapter {
 
     @Override
-    protected String getLimitStringInternal(String sql, int offset, int limit) {
+    protected String getLimitStringInternal(MappedStatement mappedStatement,BoundSql pageBoundSql,String sql, int offset, int limit) {
         if (offset == 0) {
             return sql + " fetch first " + limit + " rows only";
         }

@@ -5,6 +5,10 @@
 
 package org.mybatis.plugin.pager.dialect;
 
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.ParameterMapping;
+
 /**
  * @Description: 
  * @author Hanyanjing
@@ -12,10 +16,13 @@ package org.mybatis.plugin.pager.dialect;
  * @version 1.0
  */
 public abstract class DialectAdapter implements Dialect {
-    public String getLimitString(String query, int offset, int limit) {
-        return getLimitStringInternal(preProcessQuery(query), offset, limit);
+	
+	@Override
+    public String getLimitString(MappedStatement mappedStatement,BoundSql pageBoundSql,String query, int offset, int limit) {
+        return getLimitStringInternal(mappedStatement,pageBoundSql,preProcessQuery(query), offset, limit);
     }
-
+    
+    @Override
     public String limitStringByPage(String query, int pageSize, int pageNum) {
         throw new UnsupportedOperationException("not implement yet.");
     }
@@ -25,17 +32,35 @@ public abstract class DialectAdapter implements Dialect {
         return " select count(1) from (" + query + ") derived_ ";
     }
 
-    private String preProcessQuery(String query) {
-        return query;
-    }
-
     /**
      * pre-processing Mybatis query sql. e.g remove ';'
-     * 
      * @param query
-     * @param offset
-     * @param limit
      * @return
      */
-    protected abstract String getLimitStringInternal(String query, int offset, int limit);
+    private String preProcessQuery(String query) {
+    	if ( query.charAt( query.length() - 1) == ';' ) {
+    		return query.substring(0, query.length() - 1);
+		}
+        return query;
+    }
+    
+    /**
+     * 添加参数
+     * @param copyMappedStatement
+     * @param copyBoundSql
+     * @param name
+     * @param value
+     * @param type
+     */
+    protected void setPageParameter(MappedStatement copyMappedStatement,BoundSql copyBoundSql,String name, Object value, Class<?> type){
+        ParameterMapping parameterMapping = new ParameterMapping.Builder(copyMappedStatement.getConfiguration(), name, type).build();
+        copyBoundSql.getParameterMappings().add(parameterMapping);
+        copyBoundSql.setAdditionalParameter(name, value);
+    }
+    
+    protected int getOffsetEnd(int offset,int limit){
+    	return offset+limit;
+    }
+
+    protected abstract String getLimitStringInternal(MappedStatement mappedStatement,BoundSql pageBoundSql,String query, int offset, int limit);
 }

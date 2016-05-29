@@ -7,6 +7,9 @@ package org.mybatis.plugin.pager.dialect;
 
 import java.util.Locale;
 
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.MappedStatement;
+
 /**
  * @Description: 
  * @author Hanyanjing
@@ -22,7 +25,7 @@ public class SQLServerDialect extends DialectAdapter {
     }
 
     @Override
-    protected String getLimitStringInternal(String querySelect, int offset, int limit) {
+    protected String getLimitStringInternal(MappedStatement mappedStatement,BoundSql pageBoundSql,String querySelect, int offset, int limit) {
         if ( offset > 0 ) {
             throw new UnsupportedOperationException( "query result offset is not supported" );
         }

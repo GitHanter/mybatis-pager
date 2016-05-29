@@ -45,26 +45,32 @@ public class StandardDialectResolver implements DialectResolver {
         final String databaseName = info.getDatabaseName();
 
         if ("H2".equals(databaseName)) {
+        	LOG.info("Resolved H2Dialect!");
             return new H2Dialect();
         }
 
         if ("MySQL".equals(databaseName)) {
+        	LOG.info("Resolved MySQLDialect!");
             return new MySQLDialect();
         }
 
         if ("PostgreSQL".equals(databaseName)) {
+        	LOG.info("Resolved PostgreSQLDialect!");
             return new PostgreSQLDialect();
         }
 
         if (databaseName.startsWith("Microsoft SQL Server")) {
+        	LOG.info("Resolved SQLServerDialect!");
             return new SQLServerDialect();
         }
 
         if ("Informix Dynamic Server".equals(databaseName)) {
+        	LOG.info("Resolved InformixDialect!");
             return new InformixDialect();
         }
 
         if (databaseName.startsWith("DB2/")) {
+        	LOG.info("Resolved DB2Dialect!");
             return new DB2Dialect();
         }
 
@@ -79,12 +85,15 @@ public class StandardDialectResolver implements DialectResolver {
             case 10:
                 // fall through
             case 9:
+            	LOG.info("Resolved Oracle9iDialect!");
                 return new Oracle9iDialect();
             case 8:
+            	LOG.info("Resolved Oracle8iDialect!");
                 return new Oracle8iDialect();
             default:
                 LOG.error("Unknown Oracle major version {}", majorVersion);
             }
+            LOG.info("Resolved default Oracle8iDialect with unknown majorVersion!");
             return new Oracle8iDialect();
         }
 

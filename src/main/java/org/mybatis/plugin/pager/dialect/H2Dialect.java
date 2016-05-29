@@ -5,6 +5,9 @@
 
 package org.mybatis.plugin.pager.dialect;
 
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.MappedStatement;
+
 /**
  * @Description: 
  * @author Hanyanjing
@@ -14,8 +17,17 @@ package org.mybatis.plugin.pager.dialect;
 public class H2Dialect extends DialectAdapter {
 
     @Override
-    protected String getLimitStringInternal(String sql, int offset, int limit) {
-        return sql + (offset > 0 ? " limit ? offset ?" : " limit ?");
+    protected String getLimitStringInternal(MappedStatement mappedStatement,BoundSql pageBoundSql,String sql, int offset, int limit) {
+    	StringBuffer buffer = new StringBuffer( sql.length()+40 ).append(sql);
+    	if (offset > 0) {
+    		buffer.append(" limit ? offset ? ");
+    		setPageParameter(mappedStatement, pageBoundSql, LIMIT_PARAM_NAME, limit, Integer.class);
+			setPageParameter(mappedStatement, pageBoundSql, OFFSET_PARAM_NAME, offset, Integer.class);
+		}else{
+			buffer.append(" limit ?");
+			setPageParameter(mappedStatement, pageBoundSql, LIMIT_PARAM_NAME, limit, Integer.class);
+		}
+        return buffer.toString();
     }
 
 }

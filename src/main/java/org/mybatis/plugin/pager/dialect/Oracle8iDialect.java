@@ -7,6 +7,9 @@ package org.mybatis.plugin.pager.dialect;
 
 import java.util.Locale;
 
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.MappedStatement;
+
 /**
  * @Description: 
  * @author Hanyanjing
@@ -16,7 +19,7 @@ import java.util.Locale;
 public class Oracle8iDialect extends DialectAdapter {
 
     @Override
-    protected String getLimitStringInternal(String sql, int offset, int limit) {
+    protected String getLimitStringInternal(MappedStatement mappedStatement,BoundSql pageBoundSql,String sql, int offset, int limit) {
         boolean hasOffset = offset > 0;
         sql = sql.trim();
         boolean isForUpdate = false;
@@ -34,8 +37,12 @@ public class Oracle8iDialect extends DialectAdapter {
         pagingSelect.append(sql);
         if (hasOffset) {
             pagingSelect.append(" ) row_ ) where rownum_ <= ? and rownum_ > ?");
+            setPageParameter(mappedStatement, pageBoundSql, OFFSET_END_PARAM_NAME, getOffsetEnd(offset, limit), Integer.class);
+            setPageParameter(mappedStatement, pageBoundSql, OFFSET_PARAM_NAME, offset, Integer.class);
+           
         } else {
             pagingSelect.append(" ) where rownum <= ?");
+            setPageParameter(mappedStatement, pageBoundSql, OFFSET_PARAM_NAME, limit, Integer.class);
         }
 
         if (isForUpdate) {

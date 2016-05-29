@@ -5,6 +5,9 @@
 
 package org.mybatis.plugin.pager.dialect;
 
+import org.apache.ibatis.mapping.BoundSql;
+import org.apache.ibatis.mapping.MappedStatement;
+
 /**
  * @Description: 
  * @author Hanyanjing
@@ -12,16 +15,24 @@ package org.mybatis.plugin.pager.dialect;
  * @version 1.0
  */
 public interface Dialect {
+	
+	String OFFSET_PARAM_NAME="mybatis_offset_";
+	
+	String LIMIT_PARAM_NAME = "mybatis_limit_";
+	
+	String OFFSET_END_PARAM_NAME="mybatis_offsetEnd_";
 
     /**
      * Given a limit and an offset, apply the limit clause to the query.
      *
+     * @param mappedStatement
+     * @param pageBoundSql
      * @param query The query to which to apply the limit.
      * @param offset The offset of the limit
      * @param limit The limit of the limit ;)
      * @return The modified query statement with the limit applied.
      */
-    String getLimitString(String query, int offset, int limit);
+    String getLimitString(MappedStatement mappedStatement,BoundSql pageBoundSql,String query, int offset, int limit);
 
     /**
      * Given a limit and an offset, apply the limit clause to the query.
