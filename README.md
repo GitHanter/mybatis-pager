@@ -24,5 +24,6 @@ mybatis.cfg.xml配置文件中添加
 sqlsession.selectList(String statement, Object parameter, RowBounds rowBounds) 或
 sqlsession.selectMap(String statement, Object parameter, String mapKey, RowBounds rowBounds)
 ```
+`selectList`调用返回值为[`PageList`](https://github.com/GitHanter/mybatis-pager/blob/master/src/main/java/org/mybatis/plugin/pager/model/PageList.java)
 
 参数`offsetAsPageNum` 表示是否把传入的`RowBounds`的`offset`属性当做`pageNumber`处理，默认为`false`。(因为`RowBounds`的`limit`属性就是pageSize)
