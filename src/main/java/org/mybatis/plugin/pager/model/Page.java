@@ -1,14 +1,18 @@
-/**
- * 
+/*
+ * Copyright 2016-2019 All rights reserved.
+ * Email: han.yanjingyy@gmail.com
  */
+
 package org.mybatis.plugin.pager.model;
 
 import java.io.Serializable;
 import java.util.List;
 
 /**
- * @author hanyj
- *
+ * @Description:
+ * @author Hanyanjing
+ * @date 2016年5月27日 下午4:53:48
+ * @version 1.0
  */
 public class Page<T> implements Serializable {
 	/**

@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.locks.ReentrantLock;
 
-import javax.xml.bind.PropertyException;
-
 import org.apache.ibatis.cache.Cache;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
@@ -71,26 +69,14 @@ import org.slf4j.LoggerFactory;
  * 同时使用缓存的时候使得查询总数的SQL和查询分页数据的SQL都启用(程序员自己写时可能某个SQL上没有配置缓存)<br>
  * 所以分页插件内提供排序功能毫无用处，甚至造成误导。
  * <p>
- * 分页插件有有一点一定要注意，那就是不能改变传入的参数值，只能使用深拷贝复制一个，然后把这个拷贝的对象传给代理的方法(invocation.getTarget()中的原对象)
- * MappedStatement 对象是在启动时解析Mapper xml创建的，不能对其进行更改，因为分页插件只是完成一次分页操作，下次调用该Mapper时有可能不再需要分页功能。
- * 所以要改变传入参数时必须使用深拷贝
- * 查看{@code DefaultSqlSession} 中{@code MappedStatement ms = configuration.getMappedStatement(statement);}
+ * 分页插件有有一点一定要注意，那就是不能改变传入的参数值，只能使用深拷贝复制一个，然后把这个拷贝的对象传给代理的方法(invocation.getTarget()中的原对象) MappedStatement 对象是在启动时解析Mapper xml创建的，不能对其进行更改，因为分页插件只是完成一次分页操作，下次调用该Mapper时有可能不再需要分页功能。 所以要改变传入参数时必须使用深拷贝 查看{@code DefaultSqlSession} 中{@code MappedStatement ms = configuration.getMappedStatement(statement);}
  * <p>
- * 拦截StatementHandler直接把BoundSql.sql设置成分页sql即可，之所以可以这样设置，是因为BoundSql是从MappedStatement取得的，也即
- * 从SqlSource 创建的，所以每次查询都是一个新的，所以某一次查询改了Boundsql不会影响之后的查询。
- * 
- * 而拦截Executor的query方法时，要实现和StatementHandler一样的效果，则需要覆盖MappedStatement的SqlSource属性，所以需要创建一个新的MappedStatement，
- * 复制除SqlSource以外的所有属性。然后把拦截时获取的BoundSql，更改sql为分页sql既可。而分页所需参数(offset,limit)ParemeterMapping也可以在该BoundSql中直接加，参数值放在
- * additionalParameters里
- * 
+ * 拦截StatementHandler直接把BoundSql.sql设置成分页sql即可，之所以可以这样设置，是因为BoundSql是从MappedStatement取得的，也即 从SqlSource 创建的，所以每次查询都是一个新的，所以某一次查询改了Boundsql不会影响之后的查询。 而拦截Executor的query方法时，要实现和StatementHandler一样的效果，则需要覆盖MappedStatement的SqlSource属性，所以需要创建一个新的MappedStatement，
+ * 复制除SqlSource以外的所有属性。然后把拦截时获取的BoundSql，更改sql为分页sql既可。而分页所需参数(offset,limit)的ParemeterMapping也可以在该BoundSql中直接加，参数值放在 additionalParameters里
  * <p>
- * ParameterMapping的顺序一定要和它在分页Sql中的顺序一致，如"limit <offset>,<limit>",那么
- * <offset>的ParameterMapping要在<limit>的ParameterMapping前；且如果有ParameterMapping，那么
- * sql语句中一定要有占位符(即如果直接拼接在分页Sql中，那么就不要添加ParameterMapping)
- * 
+ * ParameterMapping的顺序一定要和它在分页Sql中的顺序一致，如"limit <offset>,<limit>",那么 <offset>的ParameterMapping要在<limit>的ParameterMapping前；且如果有ParameterMapping，那么 sql语句中一定要有占位符(即如果直接拼接在分页Sql中，那么就不要添加ParameterMapping)
  * <p>
  * dialect最好是单例，所以实现时需要考虑线程安全问题
- * 
  * <p>
  * 本插件参考了Hibernate Dialect的处理，有源码引用。
  * <p>
@@ -157,9 +143,9 @@ public class PageQueryInterceptor implements Interceptor {
         	if(count == null){
         		count = getCount(ms, transaction, parameterObject, copyBoundSql);
         		cache.putObject(countCacheKey, count);
-        	}else {
-				count=getCount(ms, transaction, parameterObject, copyBoundSql);
-			}
+            }
+        } else {
+            count = getCount(ms, transaction, parameterObject, copyBoundSql);
         }
         if (count!=null&&count==0) {
 			return new PageList<Object>();

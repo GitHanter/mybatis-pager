@@ -1,6 +1,8 @@
-/**
- * 
+/*
+ * Copyright 2016-2019 All rights reserved.
+ * Email: han.yanjingyy@gmail.com
  */
+
 package org.mybatis.plugin.pager.model;
 
 import java.util.ArrayList;
@@ -8,8 +10,10 @@ import java.util.Collection;
 
 
 /**
- * @author hanyj
- *
+ * @Description:
+ * @author Hanyanjing
+ * @date 2016年5月27日 下午4:54:43
+ * @version 1.0
  */
 public class PageList<E> extends ArrayList<E> {
 
