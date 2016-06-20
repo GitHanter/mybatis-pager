@@ -26,4 +26,4 @@ sqlsession.selectMap(String statement, Object parameter, String mapKey, RowBound
 ```
 `selectList`调用返回值为[`PageList`](https://github.com/GitHanter/mybatis-pager/blob/master/src/main/java/org/mybatis/plugin/pager/model/PageList.java)
 
-参数`offsetAsPageNum` 表示是否把传入的`RowBounds`的`offset`属性当做`pageNumber`处理，默认为`false`。(因为`RowBounds`的`limit`属性就是pageSize)
+参数`offsetAsPageNum` 表示是否把传入的`RowBounds`的`offset`属性当做`pageNumber`处理，默认为`false`。(`RowBounds`的`limit`属性是pageSize)
