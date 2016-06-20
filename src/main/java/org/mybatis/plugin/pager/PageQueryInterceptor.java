@@ -103,6 +103,7 @@ public class PageQueryInterceptor implements Interceptor {
 
     private static int ROWBOUNDS_INDEX = 2;
 
+    @SuppressWarnings("unchecked")
     public Object intercept(Invocation invocation) throws Throwable {
         final Executor executor = (Executor) invocation.getTarget();
         final Object[] queryArgs = invocation.getArgs();
@@ -295,7 +296,7 @@ public class PageQueryInterceptor implements Interceptor {
 			}
     		DatabaseMetaData databaseMetaData = connection.getMetaData();
     		DatabaseMetaDataDialectResolutionInfoAdapter resolutionInfo = new DatabaseMetaDataDialectResolutionInfoAdapter(databaseMetaData);
-    		DialectResolver dialectResolver = new StandardDialectResolver();
+            DialectResolver dialectResolver = StandardDialectResolver.INSTANCE;
     		dialect = dialectResolver.resolveDialect(resolutionInfo);
     		return dialect;
 		} finally {
@@ -308,7 +309,7 @@ public class PageQueryInterceptor implements Interceptor {
     }
 
     public void setProperties(Properties properties) {
-    	String offsetProperty = properties.getProperty("offsetAsPageNum");
+        String offsetProperty = properties.getProperty(Constants.OFFSET_AS_PAGE_NUMBER);
     	if (offsetProperty!=null) {
     		offsetAsPageNum = Boolean.valueOf(offsetProperty);
 		}

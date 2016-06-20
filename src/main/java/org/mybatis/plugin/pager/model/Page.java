@@ -68,8 +68,6 @@ public class Page<T> implements Serializable {
 		}
 	}
 	
-	
-
 	public int getRecordPerPage() {
 		return recordPerPage;
 	}

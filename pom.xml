@@ -9,11 +9,26 @@
 	<name>mybatis pager</name>
 	<description>Mybatis Physical paging plugin (Executor or StatementHandler)</description>
 	
+	<distributionManagement>
+		<repository>
+			<id>nexus-releases</id>
+			<name>Nexus Release Repository</name>
+			<uniqueVersion>false</uniqueVersion>
+			<url>http://10.1.2.202:8081/nexus/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>nexus-snapshots</id>
+			<name>Nexus Snapshot Repository</name>
+			<uniqueVersion>false</uniqueVersion>
+			<url>http://10.1.2.202:8081/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
 	<issueManagement>
 		<url>https://github.com/GitHanter/mybatis-pager/issues</url>
 		<system>GitHub Issues</system>
 	</issueManagement>
-	
+
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
@@ -21,12 +36,12 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-	
+
 	<scm>
-        <connection>scm:git:git@github.com:GitHanter/mybatis-pager.git</connection>
-        <developerConnection>scm:git:git@github.com:GitHanter/mybatis-pager.git</developerConnection>
-        <url>git@github.com:GitHanter/mybatis-pager.git</url>
-    </scm>
+		<connection>scm:git:git@github.com:GitHanter/mybatis-pager.git</connection>
+		<developerConnection>scm:git:git@github.com:GitHanter/mybatis-pager.git</developerConnection>
+		<url>git@github.com:GitHanter/mybatis-pager.git</url>
+	</scm>
 
 	<developers>
 		<developer>
@@ -65,12 +80,12 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-		    <groupId>commons-beanutils</groupId>
-		    <artifactId>commons-beanutils</artifactId>
-		    <version>1.9.2</version>
-		    <scope>provided</scope>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.9.2</version>
+			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
@@ -123,23 +138,33 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-gpg-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>sign-artifacts</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>sign</goal>
-						</goals>
-						<configuration>
-			              <keyname>${gpg.keyname}</keyname>
-			              <passphraseServerId>${gpg.keyname}</passphraseServerId>
-			            </configuration>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+								<configuration>
+									<keyname>${gpg.keyname}</keyname>
+									<passphraseServerId>${gpg.keyname}</passphraseServerId>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
