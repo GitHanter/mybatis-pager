@@ -124,8 +124,8 @@ public class PageQueryInterceptor implements Interceptor {
 		}
         RowBounds pageBounds = new RowBounds(offset, limit);
         
-        //Mybatis内部使用的逻辑分页，已经进行物理分页，则不再需要逻辑分页
-        queryArgs[ROWBOUNDS_INDEX] = new RowBounds(RowBounds.NO_ROW_OFFSET,RowBounds.NO_ROW_LIMIT);
+        // 插件内部使用的逻辑分页，已经进行物理分页，则不再需要逻辑分页
+        queryArgs[ROWBOUNDS_INDEX] = RowBounds.DEFAULT;
         
         final BoundSql originalBoundSql = ms.getBoundSql(parameterObject);
         Transaction transaction = executor.getTransaction();
@@ -218,8 +218,9 @@ public class PageQueryInterceptor implements Interceptor {
     
     /**
      * 拷贝BoundSql
-     * 未采用深拷贝。BoundSql 我们只需变更sql和hasAdditionalParameter，ParameterMappings需要添加分页的参数。
+     * 
      * @param ms
+     *            未采用深拷贝。BoundSql 我们只需变更sql和hasAdditionalParameter，ParameterMappings需要添加分页的参数。
      * @param boundSql
      * @param sql
      * @return

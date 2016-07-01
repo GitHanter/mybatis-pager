@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.mybatis.plugin.pager.DemoPageQueryMapper">
+	<select id="selectUsersByMap" resultType="User">
+	   select * from user
+	   <where>
+	   		<if test="firstName!=null and firstName!='' ">
+	   			FIRST_NAME = #{firstName}
+	   		</if>
+	   		<if test="lastName!=null and lastName!='' ">
+	   			AND LAST_NAME = #{lastName}
+	   		</if>
+	   </where>
+	   order by id
+	</select>
+	
+	<select id="selectUsersByAnnotations" resultType="User">
+	   select * from user
+	   <where>
+	   		<if test="firstName!=null and firstName!='' ">
+	   			FIRST_NAME = #{firstName}
+	   		</if>
+	   		<if test="lastName!=null and lastName!='' ">
+	   			AND LAST_NAME = #{lastName}
+	   		</if>
+	   </where>
+	   order by id
+	</select>
+	
+	<select id="selectUsersByPage" resultType="User">
+	   select * from user
+	   <where>
+	   		<if test="firstName!=null and firstName!='' ">
+	   			FIRST_NAME = #{firstName}
+	   		</if>
+	   		<if test="lastName!=null and lastName!='' ">
+	   			AND LAST_NAME = #{lastName}
+	   		</if>
+	   </where>
+	   order by id
+	</select>
+	
+</mapper>

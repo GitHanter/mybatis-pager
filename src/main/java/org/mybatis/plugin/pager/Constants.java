@@ -20,4 +20,6 @@ public final class Constants {
     ============================================*/
 
     public final static String OFFSET_AS_PAGE_NUMBER = "offsetAsPageNum";
+
+    public final static String PAGE_PARAMERTER_NAME = "page";
 }

@@ -81,6 +81,9 @@ public class Page<T> implements Serializable {
 	}
 
 	public void setPageNumber(int pageNumber) {
+        if (pageNumber <= 0) {
+            throw new IllegalArgumentException("'pageNumber' must be positive integer!");
+        }
 		this.pageNumber = pageNumber;
 	}
 
@@ -89,6 +92,9 @@ public class Page<T> implements Serializable {
 	}
 
 	public void setPageSize(int pageSize) {
+        if (pageSize <= 0) {
+            throw new IllegalArgumentException("'pageSize' must be positive integer!");
+        }
 		this.pageSize = pageSize;
 	}
 

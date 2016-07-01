@@ -18,6 +18,13 @@ import org.apache.ibatis.mapping.MappedStatement;
  */
 public class Oracle8iDialect extends DialectAdapter {
 
+    /**
+     * Oracle 是从1开始的，这样的选择是为了和MySQL统一
+     * 使用pageSize = 100 来测试
+     * offset = (pageNum - 1) * pageSize
+     * > offset
+     * <= offset + pageSize
+     */
     @Override
     protected String getLimitStringInternal(MappedStatement mappedStatement,BoundSql pageBoundSql,String sql, int offset, int limit) {
         boolean hasOffset = offset > 0;
