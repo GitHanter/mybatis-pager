@@ -39,6 +39,7 @@ import org.mybatis.plugin.pager.dialect.spi.DatabaseMetaDataDialectResolutionInf
 import org.mybatis.plugin.pager.dialect.spi.DialectResolver;
 import org.mybatis.plugin.pager.model.Page;
 import org.mybatis.plugin.pager.model.PageList;
+import org.mybatis.plugin.pager.resolver.PageParameterResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,20 +112,49 @@ public class PageQueryInterceptor implements Interceptor {
         final Object parameterObject = queryArgs[PARAMETER_INDEX];
         final RowBounds rowBounds = (RowBounds)queryArgs[ROWBOUNDS_INDEX];
         
+        Page<?> resolvedPageParam = null;
+        int offset = -1;
+        int limit = -1;
+        
+        Page<Object> page = null;
+        
         if((rowBounds.getOffset() == RowBounds.NO_ROW_OFFSET&& rowBounds.getLimit() == RowBounds.NO_ROW_LIMIT)
         		||rowBounds.getLimit()<= 0 || rowBounds.getOffset()< 0){
-            return invocation.proceed();
+            resolvedPageParam = PageParameterResolver.resolveParam(parameterObject, ms);
+            if (resolvedPageParam == null) {
+                // Both RowBounds and Page parameter resolve failed, this statement will not be processed as PageQuery.
+                return invocation.proceed();
+            } else {
+                offset = calculateOffset(resolvedPageParam.getPageNumber(), resolvedPageParam.getPageSize());
+                limit = resolvedPageParam.getPageSize();
+
+                page = (Page<Object>) resolvedPageParam;
+            }
+        } else {
+            // If both RowBounds and Page parameter used in the query, the RowBounds will take precedence.
+            // Means if RowBounds with invalid value, the Page parameter will take over.
+            page = new Page<Object>();
+            offset = rowBounds.getOffset();
+            limit = rowBounds.getLimit();
+
+            if (offsetAsPageNum) {
+                offset = calculateOffset(offset, limit);// (offset -1)*limit;
+
+                page.setPageNumber(rowBounds.getOffset());
+                page.setPageSize(rowBounds.getLimit());
+            }else{
+                page.setPageSize(limit);
+                if (rowBounds.getOffset()> 0) {
+                    //(pageNum -1)*pageSize = offset
+                    int pageNum = rowBounds.getOffset()%rowBounds.getLimit()==0? rowBounds.getOffset()/rowBounds.getLimit()+1:rowBounds.getOffset()/rowBounds.getLimit()+2;
+                    page.setPageNumber(pageNum);
+                }
+            }
         }
         
-        int offset = rowBounds.getOffset();
-        int limit = rowBounds.getLimit();
-        
-        if (offsetAsPageNum) {
-			offset = (offset -1)*limit;
-		}
         RowBounds pageBounds = new RowBounds(offset, limit);
         
-        // 插件内部使用的逻辑分页，已经进行物理分页，则不再需要逻辑分页
+        // Mybatis内部使用的逻辑分页，已经进行物理分页，则不再需要逻辑分页
         queryArgs[ROWBOUNDS_INDEX] = RowBounds.DEFAULT;
         
         final BoundSql originalBoundSql = ms.getBoundSql(parameterObject);
@@ -152,19 +182,8 @@ public class PageQueryInterceptor implements Interceptor {
 			return new PageList<Object>();
 		}
         
-        Page<Object> page = new Page<Object>();
+        // The Query get Result, count>0
         page.setTotalRows(count);
-        if (offsetAsPageNum) {
-			page.setPageNumber(rowBounds.getOffset());
-			page.setPageSize(rowBounds.getLimit());
-		}else{
-			page.setPageSize(limit);
-			if (rowBounds.getOffset()> 0) {
-				//(pageNum -1)*pageSize = offset
-				int pageNum = rowBounds.getOffset()%rowBounds.getLimit()==0? rowBounds.getOffset()/rowBounds.getLimit()+1:rowBounds.getOffset()/rowBounds.getLimit()+2;
-				page.setPageNumber(pageNum);
-			}
-		}
         page.afterPropertiesSet();
         
         String pageSql = dialect.getLimitString(ms, copyBoundSql, originalBoundSql.getSql(), pageBounds.getOffset(), pageBounds.getLimit());
@@ -289,6 +308,14 @@ public class PageQueryInterceptor implements Interceptor {
 		return builder.build();
 	}
     
+    private int calculateOffset(int pageNum, int pageSize) {
+        if (pageSize <= 0 || pageNum <= 0) {
+            throw new IllegalArgumentException("Both 'pageSize' and 'pageNum' should be POSITIVE Integer!");
+        }
+        // (pageNum -1)*pageSize = offset
+        return (pageNum - 1) * pageSize;
+    }
+
     private Dialect getDialect(Connection connection) throws Throwable{
     	lock.lock();
     	try {
