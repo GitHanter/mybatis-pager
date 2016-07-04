@@ -5,16 +5,6 @@
 
 package org.mybatis.plugin.pager;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.locks.ReentrantLock;
-
 import org.apache.ibatis.cache.Cache;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
@@ -23,11 +13,7 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.MappedStatement.Builder;
 import org.apache.ibatis.mapping.ParameterMapping;
 import org.apache.ibatis.mapping.SqlSource;
-import org.apache.ibatis.plugin.Interceptor;
-import org.apache.ibatis.plugin.Intercepts;
-import org.apache.ibatis.plugin.Invocation;
-import org.apache.ibatis.plugin.Plugin;
-import org.apache.ibatis.plugin.Signature;
+import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.scripting.defaults.DefaultParameterHandler;
 import org.apache.ibatis.session.ResultHandler;
@@ -42,6 +28,12 @@ import org.mybatis.plugin.pager.model.PageList;
 import org.mybatis.plugin.pager.resolver.PageParameterResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * <p>
@@ -179,7 +171,14 @@ public class PageQueryInterceptor implements Interceptor {
             count = getCount(ms, transaction, parameterObject, copyBoundSql);
         }
         if (count!=null&&count==0) {
-			return new PageList<Object>();
+			PageList<Object> empty= new PageList<Object>();
+            if (page!=null){
+                //If resolved page parameter, should use the page information (with pageNumber and pageSize)
+                page.setTotalRows(0);
+                page.afterPropertiesSet();
+                empty.setPage(page);
+            }
+            return empty;
 		}
         
         // The Query get Result, count>0
