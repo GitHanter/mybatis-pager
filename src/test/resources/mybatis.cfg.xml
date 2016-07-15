@@ -2,7 +2,11 @@
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD SQL Map Config 3.0//EN"  
 	"http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-
+	
+	<properties>
+		<property name="offsetAsPageNum" value="true"/>
+	</properties>
+	
 	<settings>
 		<setting name="cacheEnabled" value="false" />
 		<setting name="useGeneratedKeys" value="true" />
@@ -17,7 +21,7 @@
 	
 	<plugins>
 		<plugin interceptor="org.mybatis.plugin.pager.PageQueryInterceptor">
-			<property name="offsetAsPageNum" value="true" />
+			<property name="offsetAsPageNum" value="${offsetAsPageNum}" />
 		</plugin>
 	</plugins>
 	

@@ -121,8 +121,8 @@ public class PageQueryInterceptor implements Interceptor {
         if((rowBounds.getOffset() == RowBounds.NO_ROW_OFFSET&& rowBounds.getLimit() == RowBounds.NO_ROW_LIMIT)
         		||rowBounds.getLimit()<= 0 || rowBounds.getOffset()< 0){
             resolvedPageParam = PageParameterResolver.resolveParam(parameterObject, ms);
-            if (resolvedPageParam == null) {
-                // Both RowBounds and Page parameter resolve failed, this statement will not be processed as PageQuery.
+            if (resolvedPageParam == null || resolvedPageParam.isPageManually()) {
+                // Both RowBounds and Page parameter resolve failed, or Page Manually, this statement will not be processed as PageQuery.
                 return invocation.proceed();
             } else {
                 offset = calculateOffset(resolvedPageParam.getPageNumber(), resolvedPageParam.getPageSize());
@@ -308,7 +308,7 @@ public class PageQueryInterceptor implements Interceptor {
 		return builder.build();
 	}
     
-    private int calculateOffset(int pageNum, int pageSize) {
+    public static int calculateOffset(int pageNum, int pageSize) {
         if (pageSize <= 0 || pageNum <= 0) {
             throw new IllegalArgumentException("Both 'pageSize' and 'pageNum' should be POSITIVE Integer!");
         }
@@ -343,6 +343,10 @@ public class PageQueryInterceptor implements Interceptor {
 		}
     }
     
+    public boolean isOffsetAsPageNum() {
+        return offsetAsPageNum;
+    }
+
     public static class DirectSqlSource implements SqlSource {
 		private BoundSql boundSql;
 		

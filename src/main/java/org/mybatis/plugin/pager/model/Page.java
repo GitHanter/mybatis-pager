@@ -47,6 +47,8 @@ public class Page<T> implements Serializable {
 
     private boolean hasPreviousPage = false; // 是否有前一页
 
+    private boolean pageManually = false;// 是否手工分页[即是否不使用插件，直接手动在Mybatis-Mapper里拼装分页SQL。默认为false，使用插件分页]
+
     private List<T> content;
 
     public Page() {
@@ -54,8 +56,13 @@ public class Page<T> implements Serializable {
     }
 
     public Page(int pageNum, int pageSize) {
+        this(pageNum, pageSize, false);
+    }
+
+    public Page(int pageNum, int pageSize, boolean manually) {
         setPageNumber(pageNum);
         setPageSize(pageSize);
+        this.pageManually = manually;
     }
 
     public void afterPropertiesSet() {
@@ -138,6 +145,14 @@ public class Page<T> implements Serializable {
 
     public void setHasPreviousPage(boolean hasPreviousPage) {
         this.hasPreviousPage = hasPreviousPage;
+    }
+
+    public boolean isPageManually() {
+        return pageManually;
+    }
+
+    public void setPageManually(boolean pageManually) {
+        this.pageManually = pageManually;
     }
 
     public List<T> getContent() {
