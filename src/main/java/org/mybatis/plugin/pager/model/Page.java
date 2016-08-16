@@ -29,6 +29,8 @@ public class Page<T> implements Serializable {
     /** 默认每页最多显示条数 */
     public static final int DEFAULT_MAX_RECORD_PER_PAGE = 200;
 
+    private static final int DEFAULT_PAGING_SIZE = 9;// 滑动窗口大小
+
     private int recordPerPage = DEFAULT_MAX_RECORD_PER_PAGE;
 
     /** 页码 */
@@ -36,12 +38,18 @@ public class Page<T> implements Serializable {
 
     /** 每页记录数 */
     private int pageSize = DEFAULT_PAGE_SIZE;
+    
+    private int pagingSize = DEFAULT_PAGING_SIZE;
 
     /** 总页数 */
     private int totalPages = 0;
 
     /** 总记录数 */
     private int totalRows = 0;
+
+    private int startPage = 0;// 滑动窗口起始页码
+
+    private int endPage = 0;// 滑动窗口终止页码
 
     private boolean hasNextPage = false; // 是否有下一页
 
@@ -83,6 +91,45 @@ public class Page<T> implements Serializable {
         } else {
             hasNextPage = true;
         }
+
+        // 滑动窗口计算
+        if (totalPages <= 10 || pageNumber <= 3) {
+            startPage = 1;
+            endPage = 10 > totalPages ? totalPages : 10;
+        } else {
+            if (totalPages - pageNumber <= 7) {
+                startPage = totalPages - 9;
+                endPage = totalPages;
+            } else {
+                startPage = pageNumber - 2;
+                endPage = pageNumber + 7;
+            }
+        }
+
+    }
+
+    public int getPagingSize() {
+        return pagingSize;
+    }
+
+    public void setPagingSize(int pagingSize) {
+        this.pagingSize = pagingSize;
+    }
+
+    public int getStartPage() {
+        return startPage;
+    }
+
+    public void setStartPage(int startPage) {
+        this.startPage = startPage;
+    }
+
+    public int getEndPage() {
+        return endPage;
+    }
+
+    public void setEndPage(int endPage) {
+        this.endPage = endPage;
     }
 
     public int getRecordPerPage() {
