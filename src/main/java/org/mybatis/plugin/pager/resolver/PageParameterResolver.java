@@ -9,6 +9,8 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.reflection.MetaObject;
 import org.mybatis.plugin.pager.Constants;
 import org.mybatis.plugin.pager.model.Page;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @Description: 
@@ -17,6 +19,8 @@ import org.mybatis.plugin.pager.model.Page;
  * @version 1.0
  */
 public class PageParameterResolver {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PageParameterResolver.class);
 
     public static Page<?> resolveParam(Object parameterObject, MappedStatement ms) {
         if (parameterObject instanceof Page<?>) {
@@ -33,8 +37,16 @@ public class PageParameterResolver {
              * params.put(Constants.PAGE_PARAMERTER_NAME,new Page<Object>());
              */
             MetaObject metaObject = ms.getConfiguration().newMetaObject(parameterObject);
-            Object resolved = metaObject.getValue(Constants.PAGE_PARAMERTER_NAME);
-            if (resolved instanceof Page<?>) {
+            Object resolved = null;
+            try {
+                resolved = metaObject.getValue(Constants.PAGE_PARAMERTER_NAME);
+            } catch (Exception e) {
+                // Most happened when there is not page parameter
+                // org.apache.ibatis.reflection.ReflectionException: There is no getter for property named 'page'
+                LOGGER.info("Resolve Page parameter failed. Most likely the page parameter doesn't contained in the parameterObject[{},{}]. WILL NOT PROCEED TO PAGE QUERY!",
+                            parameterObject.getClass(), parameterObject);
+            }
+            if (resolved != null && (resolved instanceof Page<?>)) {
                 return (Page<?>) resolved;
             }
         }
