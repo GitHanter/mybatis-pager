@@ -141,8 +141,7 @@
                                 <#if pageNumber == 1>
                                     <li class="previous disabled"><a href="javascript:void(0)">上一页</a></li>
                                 <#else>
-                                    <li class="previous" data-page-no="${pageNumber-1}"><a
-                                            href="javascript:$.turnOverPage(${pageNumber-1})">上一页</a></li>
+                                    <li class="previous" data-page-no="${pageNumber-1}"><a href="javascript:$.turnOverPage(${pageNumber-1})">上一页</a></li>
                                 </#if>
 
                                 <!-- 滑动窗口,滑动窗口大小为pagingSize -->

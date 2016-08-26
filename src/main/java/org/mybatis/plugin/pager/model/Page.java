@@ -29,7 +29,7 @@ public class Page<T> implements Serializable {
     /** 默认每页最多显示条数 */
     public static final int DEFAULT_MAX_RECORD_PER_PAGE = 200;
 
-    private static final int DEFAULT_PAGING_SIZE = 9;// 滑动窗口大小
+    public static final int DEFAULT_PAGING_SIZE = 9;// 滑动窗口大小
 
     private int recordPerPage = DEFAULT_MAX_RECORD_PER_PAGE;
 

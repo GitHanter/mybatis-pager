@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd" 
+        version="2.0">  
+
+	<description>Bootstrap Pagination with mybatis </description>
+	<tlib-version>3.0</tlib-version>
+	<short-name>pagination</short-name>
+	<uri>http://www.armlock.org/mybatis/tags</uri>
+	
+	<tag>
+		<description>Bootstrap Pagination</description>
+		<name>pagination</name>
+		<tag-class>org.mybatis.plugin.pager.tag.PaginationTag</tag-class>
+		<body-content>empty</body-content>
+		<attribute>
+			<description>The page object</description>
+			<name>page</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>org.mybatis.plugin.pager.model.Page</type>
+		</attribute>
+		<attribute>
+			<description>The pagination Servlet URL</description>
+			<name>action</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<description>Form Sumbit method (Due to the Spring RequestMethod restriction or Servlet restriction)</description>
+			<name>httpMethod</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	
+	
+</taglib>
