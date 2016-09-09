@@ -88,7 +88,7 @@ public class DemoPageQueryTest {
 
     void testMapWithPage(DemoPageQueryMapper mapper) {
         Map<String, Object> params = new HashMap<String, Object>();
-        params.put(Constants.PAGE_PARAMERTER_NAME, page);
+        params.put(Constants.PAGE_PARAMETER_NAME, page);
 
         print(mapper.selectUsersByMap(params));
     }
@@ -123,9 +123,9 @@ public class DemoPageQueryTest {
     @Ignore
     public void testObjectWrapper() throws IOException {
         Map<String, Object> parameterObject = new HashMap<String, Object>();
-        parameterObject.put(Constants.PAGE_PARAMERTER_NAME, page);
+        parameterObject.put(Constants.PAGE_PARAMETER_NAME, page);
         MetaObject metaObject = sessionFactory.getConfiguration().newMetaObject(parameterObject);
-        Object resolved = metaObject.getValue(Constants.PAGE_PARAMERTER_NAME);
+        Object resolved = metaObject.getValue(Constants.PAGE_PARAMETER_NAME);
         System.out.println(resolved instanceof Page<?>);
     }
 

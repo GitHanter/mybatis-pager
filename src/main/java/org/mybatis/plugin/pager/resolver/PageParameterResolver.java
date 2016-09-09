@@ -31,15 +31,15 @@ public class PageParameterResolver {
         } else if (parameterObject != null) {
             /**
              * Mapper形如：
-             * (1) List<User> selectUsers(@Param(Constants.PAGE_PARAMERTER_NAME)Page<User> page,Object... arguments);
+             * (1) List<User> selectUsers(@Param(Constants.PAGE_PARAMETER_NAME)Page<User> page,Object... arguments);
              * (2) 或者：List<User> selectUsers(Map<String,Object> params);
              * 且传入参数形如 Map<String,Object> params = new HashMap<String,Object>();
-             * params.put(Constants.PAGE_PARAMERTER_NAME,new Page<Object>());
+             * params.put(Constants.PAGE_PARAMETER_NAME,new Page<Object>());
              */
             MetaObject metaObject = ms.getConfiguration().newMetaObject(parameterObject);
             Object resolved = null;
             try {
-                resolved = metaObject.getValue(Constants.PAGE_PARAMERTER_NAME);
+                resolved = metaObject.getValue(Constants.PAGE_PARAMETER_NAME);
             } catch (Exception e) {
                 // Most happened when there is not page parameter
                 // org.apache.ibatis.reflection.ReflectionException: There is no getter for property named 'page'

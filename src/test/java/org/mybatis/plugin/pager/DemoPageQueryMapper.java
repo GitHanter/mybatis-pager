@@ -27,7 +27,7 @@ public interface DemoPageQueryMapper {
     /**
      * 推荐用法
      * 
-     * 这种方式需要传入参数中有一个{@code org.mybatis.plugin.pager.Constants#PAGE_PARAMERTER_NAME page}为key，且类型为 {@code org.mybatis.plugin.pager.model.Page}的Entry
+     * 这种方式需要传入参数中有一个{@code org.mybatis.plugin.pager.Constants#PAGE_PARAMETER_NAME page}为key，且类型为 {@code org.mybatis.plugin.pager.model.Page}的Entry
      * 且Map中没有xml里需要的参数时，也不会报错
      * 
      * @param params
@@ -43,7 +43,7 @@ public interface DemoPageQueryMapper {
      * @param param
      * @return
      */
-    List<User> selectUsersByAnnotations(@Param(org.mybatis.plugin.pager.Constants.PAGE_PARAMERTER_NAME) Page<?> page, @Param("additionalParams") Object param);
+    List<User> selectUsersByAnnotations(@Param(org.mybatis.plugin.pager.Constants.PAGE_PARAMETER_NAME) Page<?> page, @Param("additionalParams") Object param);
     
 
     /*-----------------------------------------------
