@@ -8,11 +8,8 @@ package org.mybatis.plugin.pager;
 import org.apache.ibatis.cache.Cache;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
-import org.apache.ibatis.mapping.BoundSql;
-import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.mapping.*;
 import org.apache.ibatis.mapping.MappedStatement.Builder;
-import org.apache.ibatis.mapping.ParameterMapping;
-import org.apache.ibatis.mapping.SqlSource;
 import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.scripting.defaults.DefaultParameterHandler;
@@ -267,7 +264,18 @@ public class PageQueryInterceptor implements Interceptor {
 		builder.databaseId(ms.getDatabaseId());
 		builder.resource(ms.getResource());
 		builder.fetchSize(ms.getFetchSize());
-		builder.statementType(ms.getStatementType());
+
+        /**
+         * Bug for 'STATEMENT' type query: page parameter not be set due to the SimpleStatementHandler
+         * @see org.apache.ibatis.executor.statement.RoutingStatementHandler#RoutingStatementHandler(Executor, MappedStatement, Object, RowBounds, ResultHandler, BoundSql)
+         * @see org.apache.ibatis.executor.statement.SimpleStatementHandler#parameterize(Statement)
+         */
+        if(StatementType.STATEMENT==ms.getStatementType()){
+            builder.statementType(StatementType.PREPARED);
+        }else{
+            builder.statementType(ms.getStatementType());
+        }
+
 		builder.keyGenerator(ms.getKeyGenerator());
 		if(ms.getKeyProperties() != null && ms.getKeyProperties().length !=0){
             StringBuffer keyProperties = new StringBuffer();
