@@ -1,7 +1,7 @@
 <#--
 * Freemarker 分页插件，使用Boostrap Panitaion样式，当然也可以自己定义样式。使用时引入boostrap.min.css和 jquery
 * Freemarker 作为Spring MVC的一类view，FreeMarkerConfigurer需配置以下属性 
-*	<bean id="freeMarkerConfigurer" class="com.lixin.common.framework.freemarker.FreeMarkerConfigurer">
+*	<bean id="freeMarkerConfigurer" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
 *		<property name="preferFileSystemAccess" value="false" />
 *		<property name="templateLoaderPaths" value="/path/to/your/templates,classpath:/freemarker/" />
 *		<property name="freemarkerVariables">
